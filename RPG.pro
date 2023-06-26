@@ -13,20 +13,18 @@ win32 {
 
 SOURCES += \
     attack.cpp \
+    count.cpp \
     demon.cpp \
     game.cpp \
-    health.cpp \
     main.cpp \
-    player.cpp \
-    score.cpp
+    player.cpp
 
 HEADERS += \
     attack.h \
+    count.h \
     demon.h \
     game.h \
-    health.h \
-    player.h \
-    score.h
+    player.h
 
 FORMS +=
 

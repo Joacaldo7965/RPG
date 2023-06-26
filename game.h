@@ -2,8 +2,7 @@
 #define GAME_H
 
 #include<player.h>
-#include<score.h>
-#include<health.h>
+#include<count.h>
 #include<QGraphicsView>
 #include<QWidget>
 #include<QGraphicsScene>
@@ -16,11 +15,17 @@ class Game: public QGraphicsView
 {
 public:
     Game(QWidget *parent=0);
-
+    void killDemon();
+    void damagePlayer(int damage);
+public:
     QGraphicsScene *scene;
     Player *player;
-    Score *score;
-    Health *health;
+    Count *score;
+    Count *shots;
+    Count *playerHealth;
+    Count *demonCount;
+private:
+    int numDemons;
 };
 
 #endif // GAME_H

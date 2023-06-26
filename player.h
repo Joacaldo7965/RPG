@@ -11,6 +11,7 @@ public:
     void shoot(int dx, int dy);
     void decreaseShot();
     void showImageOverlay(const QString& imagePath);
+    int getShots();
 private:
     void verifyGameOver();
     int nShots_;

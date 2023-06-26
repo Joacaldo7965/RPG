@@ -1,10 +1,13 @@
 #include "player.h"
-#include <QKeyEvent>
+#include "game.h"
 #include "attack.h"
 #include "demon.h"
-#include "qapplication.h"
+#include <QApplication>
+#include <QKeyEvent>
 #include <QGraphicsScene>
 #include <QDebug>
+
+extern Game *game;
 
 Player::Player(int numShots) {
     setPixmap(QPixmap(":/res/images/player/swmg.png"));
@@ -57,7 +60,12 @@ void Player::verifyGameOver() {
 }
 void Player::decreaseShot() {
     nShots_--;
+    game->shots->decrease(1);
     verifyGameOver(); // Verificar si se debe cerrar el juego
+}
+
+int Player::getShots(){
+    return nShots_;
 }
 
 void Player::setStartPosition(int screenCenterX, int screenCenterY) {

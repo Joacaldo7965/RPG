@@ -1,6 +1,7 @@
 #include "demon.h"
 #include "attack.h"
 #include "player.h"
+#include "game.h"
 #include <QApplication>
 #include <QGraphicsScene>
 #include <QPixmap>
@@ -8,14 +9,35 @@
 #include <QRandomGenerator>
 #include <typeinfo>
 
+extern Game *game;
+
 Demon::Demon()
     : dx_(QRandomGenerator::global()->bounded(-10, 15)),
-      dy_(QRandomGenerator::global()->bounded(-10, 15))
+      dy_(QRandomGenerator::global()->bounded(-10, 15)),
+      scale(1.6)
 {
-    setPixmap(QPixmap(":/res/images/demon/demon.png"));
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(move()));
-    timer->start(100);
+    width = (int) (64 * scale);
+    height = (int) (59 * scale);
+
+    setPixmap(QPixmap(":/res/images/demon/demon_tile000.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile000.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile001.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile002.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile003.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile004.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile005.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile006.png").scaled(width, height));
+
+    setTransformOriginPoint(boundingRect().width()/2, boundingRect().height()/2);
+
+    QTimer *animTimer = new QTimer(this);
+    connect(animTimer, SIGNAL(timeout()), this, SLOT(animate()));
+    animTimer->start(100);
+
+    // Periodic movement
+    QTimer *moveTimer = new QTimer(this);
+    connect(moveTimer, SIGNAL(timeout()), this, SLOT(move()));
+    moveTimer->start(100);
 
 }
 
@@ -43,14 +65,23 @@ void Demon::move() {
 
     for (QGraphicsItem* item : collidingItemsList) {
         if (typeid(*item) == typeid(Attack)) {
+            //game->score->increase(10);
+            game->killDemon();
+
             scene()->removeItem(item);
             scene()->removeItem(this);
             delete item;
             delete this;
             return;
         } else if (typeid(*item) == typeid(Player)) {
-            QApplication::quit();
+            qDebug() << item;
+            game->damagePlayer(1); // TODO: Get damage from item. ie: Enemy damage
             return;
         }
     }
+}
+
+void Demon::animate(){
+    currentIndex = (currentIndex + 1) % frames.size();
+    setPixmap(frames[currentIndex]);
 }

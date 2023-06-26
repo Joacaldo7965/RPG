@@ -11,7 +11,7 @@ Game::Game(QWidget *parent){
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setBackgroundBrush(QBrush(QImage(":/res/images/backgrounds/bg.jpg")));
 
-    int numDemons = 10; // Cambia este valor según la cantidad de demonios que desees
+    numDemons = 10; // Cambia este valor según la cantidad de demonios que desees
     int numShots = numDemons * 2;
     int screenCenterX = WIDTH/2;
     int screenCenterY = HEIGHT/2;
@@ -30,14 +30,36 @@ Game::Game(QWidget *parent){
             x = QRandomGenerator::global()->bounded(0, WIDTH);
             y = QRandomGenerator::global()->bounded(0, HEIGHT);
         } while (qAbs(x - screenCenterX) <= radius && qAbs(y - screenCenterY) <= radius);
+
         Demon *demon = new Demon();
         demon->setPos(x, y);
         demon->setMovementRange(0, WIDTH, 0, HEIGHT);
         scene->addItem(demon);
     }
 
-    score = new Score();
+    score = new Count(0, 0, QString("Score"), QFont("comic", 32));
     scene->addItem(score);
 
+    shots = new Count(0, player->getShots(), QString("Shots"), QFont("comic", 32));
+    shots->setPos(shots->x(), shots->y() + 32);
+    scene->addItem(shots);
+
+    playerHealth = new Count(0, 3, QString("Health"), QFont("comic", 32), Qt::red);
+    playerHealth->setPos(playerHealth->x(), playerHealth->y() + 64);
+    scene->addItem(playerHealth);
+
+    demonCount = new Count(0, numDemons, QString("Demons"), QFont("comic", 32), Qt::darkCyan);
+    demonCount->setPos(demonCount->x(), demonCount->y() + 96);
+    scene->addItem(demonCount);
+
     show();
+}
+
+void Game::killDemon(){
+    score->increase(10);
+    demonCount->decrease(1);
+}
+
+void Game::damagePlayer(int damage){
+    playerHealth->decrease(damage);
 }
