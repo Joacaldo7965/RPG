@@ -7,7 +7,7 @@
 #include <QDebug>
 
 Personaje::Personaje(int numShots) {
-    setPixmap(QPixmap(":/images/swmg.png"));
+    setPixmap(QPixmap(":/res/images/player/swmg.png"));
     numDisparos_ = numShots;
 }
 

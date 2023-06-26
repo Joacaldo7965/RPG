@@ -1,13 +1,16 @@
 <RCC>
-    <qresource prefix="/images">
-        <file>swmg.png</file>
-        <file>fire.png</file>
-        <file>bg.jpg</file>
-        <file>demon.png</file>
-        <file>gameover.png</file>
-    </qresource>
-    <qresource prefix="/sound">
-        <file>shadow.mp3</file>
-        <file>shadow.wav</file>
+    <qresource prefix="/">
+        <file>res/images/backgrounds/bg.jpg</file>
+        <file>res/images/backgrounds/gameover.png</file>
+        <file>res/images/demon/demon.png</file>
+        <file>res/images/demon/demon_tile000.png</file>
+        <file>res/images/demon/demon_tile001.png</file>
+        <file>res/images/demon/demon_tile002.png</file>
+        <file>res/images/demon/demon_tile003.png</file>
+        <file>res/images/demon/demon_tile004.png</file>
+        <file>res/images/demon/demon_tile005.png</file>
+        <file>res/images/demon/demon_tile006.png</file>
+        <file>res/images/effects/fire.png</file>
+        <file>res/images/player/swmg.png</file>
     </qresource>
 </RCC>

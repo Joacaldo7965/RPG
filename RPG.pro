@@ -15,12 +15,18 @@ SOURCES += \
     attack.cpp \
     character.cpp \
     demon.cpp \
-    main.cpp
+    game.cpp \
+    health.cpp \
+    main.cpp \
+    score.cpp
 
 HEADERS += \
     attack.h \
     character.h \
-    demon.h
+    demon.h \
+    game.h \
+    health.h \
+    score.h
 
 FORMS +=
 

@@ -9,7 +9,7 @@
 #include <typeinfo>
 
 Demon::Demon() : dx_(0), dy_(0) {
-    setPixmap(QPixmap(":/images/demon.png"));
+    setPixmap(QPixmap(":/res/images/demon/demon.png"));
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(move()));
     timer->start(100);

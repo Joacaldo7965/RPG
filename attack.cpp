@@ -3,7 +3,7 @@
 #include <QTimer>
 
 Attack::Attack() : dx_(0), dy_(0) {
-    setPixmap(QPixmap(":/images/fire.png"));
+    setPixmap(QPixmap(":/res/images/effects/fire.png"));
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(move()));
     timer->start(100);
