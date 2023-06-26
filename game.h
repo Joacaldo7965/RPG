@@ -17,6 +17,10 @@ public:
     Game(QWidget *parent=0);
     void killDemon();
     void damagePlayer(int damage);
+    void decreaseShot(int c);
+    void checkGameOver();
+    void gameOver();
+    void gameWin();
 public:
     QGraphicsScene *scene;
     Player *player;
@@ -24,6 +28,7 @@ public:
     Count *shots;
     Count *playerHealth;
     Count *demonCount;
+    int isGameOver=0;
 private:
     int numDemons;
 };

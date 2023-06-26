@@ -55,11 +55,46 @@ Game::Game(QWidget *parent){
     show();
 }
 
+void Game::decreaseShot(int c){
+    shots->decrease(c);
+    checkGameOver();
+}
+
 void Game::killDemon(){
     score->increase(10);
     demonCount->decrease(1);
+    checkGameOver();
 }
 
 void Game::damagePlayer(int damage){
-    playerHealth->decrease(damage);
+    if(playerHealth->getCount() - damage <= 0){
+        playerHealth->setCount(0);
+    }else{
+        playerHealth->decrease(damage);
+    }
+    checkGameOver();
+}
+
+void Game::checkGameOver(){
+    if(!isGameOver){
+        if(shots->getCount() == 0 ||
+            playerHealth->getCount() == 0
+            ){
+            gameOver();
+        }if(demonCount->getCount() == 0){
+            gameWin();
+        }else{
+            qDebug() << "Game Not Over";
+        }
+    }
+}
+
+void Game::gameOver(){
+    qDebug() << "GAME OVER";
+    isGameOver = 1;
+}
+
+void Game::gameWin(){
+    qDebug() << "You win!!";
+    isGameOver = 1;
 }

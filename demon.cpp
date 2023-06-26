@@ -74,7 +74,7 @@ void Demon::move() {
             delete this;
             return;
         } else if (typeid(*item) == typeid(Player)) {
-            qDebug() << item;
+            //qDebug() << item;
             game->damagePlayer(1); // TODO: Get damage from item. ie: Enemy damage
             return;
         }

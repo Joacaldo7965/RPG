@@ -47,21 +47,10 @@ void Player::shoot(int dx, int dy) {
         decreaseShot();
     }
 }
-void Player::verifyGameOver() {
-    if (nShots_ == 0) {
-        QList<QGraphicsItem*> demons = scene()->items();
-        for (QGraphicsItem* item : demons) {
-            if (typeid(*item) == typeid(Demon)) {
-                QApplication::quit();
-                return; // Aún hay demonios, no se cierra el juego
-            }
-        }
-    }
-}
+
 void Player::decreaseShot() {
     nShots_--;
-    game->shots->decrease(1);
-    verifyGameOver(); // Verificar si se debe cerrar el juego
+    game->decreaseShot(1);
 }
 
 int Player::getShots(){
