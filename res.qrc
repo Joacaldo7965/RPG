@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>swmg.png</file>
+        <file>fire.png</file>
+        <file>bg.jpg</file>
+        <file>demon.png</file>
+        <file>gameover.png</file>
+    </qresource>
+    <qresource prefix="/sound">
+        <file>shadow.mp3</file>
+        <file>shadow.wav</file>
+    </qresource>
+</RCC>
