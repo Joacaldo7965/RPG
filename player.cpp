@@ -1,4 +1,4 @@
-#include "character.h"
+#include "player.h"
 #include <QKeyEvent>
 #include "attack.h"
 #include "demon.h"
@@ -6,12 +6,12 @@
 #include <QGraphicsScene>
 #include <QDebug>
 
-Personaje::Personaje(int numShots) {
+Player::Player(int numShots) {
     setPixmap(QPixmap(":/res/images/player/swmg.png"));
-    numDisparos_ = numShots;
+    nShots_ = numShots;
 }
 
-void Personaje::keyPressEvent(QKeyEvent *event) {
+void Player::keyPressEvent(QKeyEvent *event) {
     int dx = 0;
     int dy = 0;
 
@@ -35,17 +35,17 @@ void Personaje::keyPressEvent(QKeyEvent *event) {
     setPos(x() + dx, y() + dy);
 }
 
-void Personaje::shoot(int dx, int dy) {
-    if (numDisparos_ > 0) {
+void Player::shoot(int dx, int dy) {
+    if (nShots_ > 0) {
         Attack *attack = new Attack();
         attack->setPos(x(), y());
         attack->setDirection(dx, dy);
         scene()->addItem(attack);
-        restarDisparo();
+        decreaseShot();
     }
 }
-void Personaje::verificarFinJuego() {
-    if (numDisparos_ == 0) {
+void Player::verifyGameOver() {
+    if (nShots_ == 0) {
         QList<QGraphicsItem*> demons = scene()->items();
         for (QGraphicsItem* item : demons) {
             if (typeid(*item) == typeid(Demon)) {
@@ -55,12 +55,12 @@ void Personaje::verificarFinJuego() {
         }
     }
 }
-void Personaje::restarDisparo() {
-    numDisparos_--;
-    verificarFinJuego(); // Verificar si se debe cerrar el juego
+void Player::decreaseShot() {
+    nShots_--;
+    verifyGameOver(); // Verificar si se debe cerrar el juego
 }
 
-void Personaje::setStartPosition(int screenCenterX, int screenCenterY) {
+void Player::setStartPosition(int screenCenterX, int screenCenterY) {
     int xPos = screenCenterX - pixmap().width() / 2;
     int yPos = screenCenterY - pixmap().height() / 2;
     setPos(xPos, yPos);

@@ -4,12 +4,12 @@
 Score::Score(QGraphicsItem *parent): QGraphicsTextItem(parent){
     score = 0;
     setPlainText(QString("Score: ") + QString::number(score));
-    setDefaultTextColor(Qt::blue);
-    setFont(QFont("times", 16));
+    setDefaultTextColor(Qt::white);
+    setFont(QFont("comic", 32));
 }
 
-void Score::increase(){
-    score++;
+void Score::increase(int step){
+    score+= step;
     setPlainText(QString("Score: ") + QString::number(score));
 }
 

@@ -1,19 +1,19 @@
-#ifndef CHARACTER_H
-#define CHARACTER_H
+#ifndef PLAYER_H
+#define PLAYER_H
 #include <QLabel>
 #include <QGraphicsPixmapItem>
 
-class Personaje : public QGraphicsPixmapItem {
+class Player : public QGraphicsPixmapItem {
 public:
-    Personaje(int numShots);
+    Player(int numShots);
     void setStartPosition(int screenCenterX, int screenCenterY);
     void keyPressEvent(QKeyEvent *event);
     void shoot(int dx, int dy);
-    void restarDisparo();
+    void decreaseShot();
     void showImageOverlay(const QString& imagePath);
 private:
-    void verificarFinJuego();
-    int numDisparos_;
+    void verifyGameOver();
+    int nShots_;
 };
 
-#endif // CHARACTER_H
+#endif // PLAYER_H

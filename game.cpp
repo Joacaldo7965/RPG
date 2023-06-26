@@ -6,7 +6,7 @@ Game::Game(QWidget *parent){
     scene = new QGraphicsScene();
     scene->setSceneRect(0, 0, WIDTH, HEIGHT);
     setScene(scene);
-    setFixedSize(640, 640);
+    setFixedSize(WIDTH, HEIGHT);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setBackgroundBrush(QBrush(QImage(":/res/images/backgrounds/bg.jpg")));
@@ -16,7 +16,7 @@ Game::Game(QWidget *parent){
     int screenCenterX = WIDTH/2;
     int screenCenterY = HEIGHT/2;
 
-    player = new Personaje(numShots);
+    player = new Player(numShots);
     player->setFlag(QGraphicsItem::ItemIsFocusable);
     player->setFocus();
     player->setStartPosition(screenCenterX, screenCenterY);
@@ -32,9 +32,12 @@ Game::Game(QWidget *parent){
         } while (qAbs(x - screenCenterX) <= radius && qAbs(y - screenCenterY) <= radius);
         Demon *demon = new Demon();
         demon->setPos(x, y);
-        demon->setMovementRange(0, 640, 0, 640);
+        demon->setMovementRange(0, WIDTH, 0, HEIGHT);
         scene->addItem(demon);
     }
+
+    score = new Score();
+    scene->addItem(score);
 
     show();
 }

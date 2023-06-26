@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include<character.h>
+#include<player.h>
 #include<score.h>
 #include<health.h>
 #include<QGraphicsView>
@@ -18,7 +18,7 @@ public:
     Game(QWidget *parent=0);
 
     QGraphicsScene *scene;
-    Personaje *player;
+    Player *player;
     Score *score;
     Health *health;
 };
