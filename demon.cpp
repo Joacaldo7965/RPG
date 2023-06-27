@@ -11,7 +11,7 @@
 
 extern Game *game;
 
-Demon::Demon()
+Demon::Demon(Rectangle collisionBox)
     : dx_(QRandomGenerator::global()->bounded(-10, 15)),
       dy_(QRandomGenerator::global()->bounded(-10, 15)),
       scale(1.6)
@@ -20,42 +20,27 @@ Demon::Demon()
     height = (int) (59 * scale);
 
     setPixmap(QPixmap(":/res/images/demon/demon_tile000.png").scaled(width, height));
-    frames.append(QPixmap(":/res/images/demon/demon_tile000.png").scaled(width, height));
-    frames.append(QPixmap(":/res/images/demon/demon_tile001.png").scaled(width, height));
-    frames.append(QPixmap(":/res/images/demon/demon_tile002.png").scaled(width, height));
-    frames.append(QPixmap(":/res/images/demon/demon_tile003.png").scaled(width, height));
-    frames.append(QPixmap(":/res/images/demon/demon_tile004.png").scaled(width, height));
-    frames.append(QPixmap(":/res/images/demon/demon_tile005.png").scaled(width, height));
-    frames.append(QPixmap(":/res/images/demon/demon_tile006.png").scaled(width, height));
 
-    setTransformOriginPoint(boundingRect().width()/2, boundingRect().height()/2);
+    // Initial spawn
+    initPosition(collisionBox);
 
-    QTimer *animTimer = new QTimer(this);
-    connect(animTimer, SIGNAL(timeout()), this, SLOT(animate()));
-    animTimer->start(100);
+    // Animation
+    initAnimation();
 
     // Periodic movement
-    QTimer *moveTimer = new QTimer(this);
-    connect(moveTimer, SIGNAL(timeout()), this, SLOT(move()));
-    moveTimer->start(100);
-
-}
-
-void Demon::setMovementRange(int minX, int maxX, int minY, int maxY) {
-    minX_ = minX;
-    maxX_ = maxX;
-    minY_ = minY;
-    maxY_ = maxY;
+    initMovement();
 }
 
 void Demon::move() {
     // Movement
     int newX = x() + dx_;
     int newY = y() + dy_;
-    if (newX < minX_ || newX > maxX_){
+
+    // Wall bounces
+    if (newX < game->collisionBox.x1 || newX + width > game->collisionBox.x2){
         dx_ = -dx_;
     }
-    if(newY < minY_ || newY > maxY_) {
+    if(newY < game->collisionBox.y1 || newY + height > game->collisionBox.y2) {
         dy_ = -dy_;
     }
     setPos(newX, newY);
@@ -74,11 +59,63 @@ void Demon::move() {
             delete this;
             return;
         } else if (typeid(*item) == typeid(Player)) {
-            //qDebug() << item;
             game->damagePlayer(1); // TODO: Get damage from item. ie: Enemy damage
             return;
         }
     }
+}
+
+
+void Demon::initPosition(Rectangle collisionBox){
+    qDebug() << "Initializing demon position";
+    int radius = 300;
+    int x, y;
+    int dx, dy;
+
+    do {
+
+        x = QRandomGenerator::global()->bounded(
+                    collisionBox.x1,
+                    collisionBox.x2 - width
+                           );
+        y = QRandomGenerator::global()->bounded(
+                    collisionBox.y1,
+                    collisionBox.y2  - height
+                     );
+
+        dx = qAbs(x - 640/2);
+        dy = qAbs(y - 640/2);
+
+        //qDebug() << "(" << dx << "," << dy << ")";
+
+    } while(dx*dx + dy*dy < radius*radius);
+
+    qDebug() << "(" << x << "," << y << ")";
+    setPos(x, y);
+    return;
+}
+
+void Demon::initAnimation(){
+    frames.append(QPixmap(":/res/images/demon/demon_tile000.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile001.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile002.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile003.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile004.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile005.png").scaled(width, height));
+    frames.append(QPixmap(":/res/images/demon/demon_tile006.png").scaled(width, height));
+    setTransformOriginPoint(boundingRect().width()/2, boundingRect().height()/2);
+
+    QTimer *animTimer = new QTimer(this);
+    connect(animTimer, SIGNAL(timeout()), this, SLOT(animate()));
+    animTimer->start(100);
+    return;
+}
+
+void Demon::initMovement(){
+    QTimer *moveTimer = new QTimer(this);
+    connect(moveTimer, SIGNAL(timeout()), this, SLOT(move()));
+    moveTimer->start(100);
+    return;
 }
 
 void Demon::animate(){

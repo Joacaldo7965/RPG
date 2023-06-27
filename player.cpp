@@ -15,17 +15,14 @@ Player::Player(int numShots) {
 }
 
 void Player::keyPressEvent(QKeyEvent *event) {
-    int dx = 0;
-    int dy = 0;
-
-    if (event->key() == Qt::Key_A && pos().x()-20>0) {
-        dx = -20;
-    } else if (event->key() == Qt::Key_D && pos().x()+48<620) {
-        dx = 20;
-    } else if (event->key() == Qt::Key_W && pos().y()-100>0) {
-        dy = -20;
-    } else if (event->key() == Qt::Key_S && pos().y()+80<620) {
-        dy = 20;
+    if (event->key() == Qt::Key_A) {
+        move(-1, 0);
+    } else if (event->key() == Qt::Key_D) {
+        move(1, 0);
+    } else if (event->key() == Qt::Key_W) {
+        move(0, -1);
+    } else if (event->key() == Qt::Key_S) {
+        move(0, 1);
     } else if (event->key() == Qt::Key_Up) {
         shoot(0, -20);
     } else if (event->key() == Qt::Key_Left) {
@@ -35,7 +32,37 @@ void Player::keyPressEvent(QKeyEvent *event) {
     } else if (event->key() == Qt::Key_Right) {
         shoot(20, 0);
     }
-    setPos(x() + dx, y() + dy);
+}
+
+void Player::move(int dx, int dy){
+    if(dx == 0 && dy == 0)
+        return;
+    int nextX = x() + dx*speed;
+    int nextY = y() + dy*speed;
+
+    // Checks for walls
+    // Top wall
+    if(nextY <= game->collisionBox.y1){
+        qDebug() << "Hit top wall";
+        return;
+    }
+    // Right wall
+    if(nextX + boundingRect().width() >= game->collisionBox.x2){
+        qDebug() << "Hit right wall";
+        return;
+    }
+    // Bottom wall
+    if(nextY + boundingRect().height() > game->collisionBox.y2){
+        qDebug() << "Hit bottom wall";
+        return;
+    }
+    // Left wall
+    if(nextX < game->collisionBox.x1){
+        qDebug() << "Hit left wall";
+        return;
+    }
+
+    setPos(nextX, nextY);
 }
 
 void Player::shoot(int dx, int dy) {

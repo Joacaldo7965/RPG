@@ -13,8 +13,11 @@ public:
     void showImageOverlay(const QString& imagePath);
     int getShots();
 private:
+    void move(int dx, int dy);
     void verifyGameOver();
     int nShots_;
+    int isFacingRight=1;
+    int speed=20;
 };
 
 #endif // PLAYER_H

@@ -11,6 +11,13 @@
 const int WIDTH = 640;
 const int HEIGHT = 640;
 
+struct Rectangle {
+    int x1;
+    int y1;
+    int x2;
+    int y2;
+};
+
 class Game: public QGraphicsView
 {
 public:
@@ -29,6 +36,7 @@ public:
     Count *playerHealth;
     Count *demonCount;
     int isGameOver=0;
+    Rectangle collisionBox={20, 80, 620, 620};
 private:
     int numDemons;
 };

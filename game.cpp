@@ -11,7 +11,9 @@ Game::Game(QWidget *parent){
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setBackgroundBrush(QBrush(QImage(":/res/images/backgrounds/bg.jpg")));
 
-    numDemons = 10; // Cambia este valor según la cantidad de demonios que desees
+    collisionBox = {25, 80, 640, 620};
+
+    numDemons = 4; // Cambia este valor según la cantidad de demonios que desees
     int numShots = numDemons * 2;
     int screenCenterX = WIDTH/2;
     int screenCenterY = HEIGHT/2;
@@ -23,19 +25,12 @@ Game::Game(QWidget *parent){
 
     scene->addItem(player);
 
-    for (int i = 0; i < std::min(numDemons, numShots / 2); ++i) {
-        int radius = 200;
-        int x, y;
-        do {
-            x = QRandomGenerator::global()->bounded(0, WIDTH);
-            y = QRandomGenerator::global()->bounded(0, HEIGHT);
-        } while (qAbs(x - screenCenterX) <= radius && qAbs(y - screenCenterY) <= radius);
 
-        Demon *demon = new Demon();
-        demon->setPos(x, y);
-        demon->setMovementRange(0, WIDTH, 0, HEIGHT);
+    for (int i = 0; i < numDemons; ++i) {
+        Demon *demon = new Demon(collisionBox);
         scene->addItem(demon);
     }
+
 
     score = new Count(0, 0, QString("Score"), QFont("comic", 32));
     scene->addItem(score);
@@ -67,7 +62,7 @@ void Game::killDemon(){
 }
 
 void Game::damagePlayer(int damage){
-    if(playerHealth->getCount() - damage <= 0){
+    if(playerHealth->getCount() < damage){
         playerHealth->setCount(0);
     }else{
         playerHealth->decrease(damage);
@@ -77,14 +72,13 @@ void Game::damagePlayer(int damage){
 
 void Game::checkGameOver(){
     if(!isGameOver){
-        if(shots->getCount() == 0 ||
+        if(shots->getCount() == 0 || // FIXME: Change this with the bullets on screen
             playerHealth->getCount() == 0
             ){
             gameOver();
-        }if(demonCount->getCount() == 0){
+        }
+        if(demonCount->getCount() == 0){
             gameWin();
-        }else{
-            qDebug() << "Game Not Over";
         }
     }
 }
