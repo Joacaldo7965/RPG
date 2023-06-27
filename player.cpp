@@ -11,6 +11,7 @@ extern Game *game;
 
 Player::Player(int numShots) {
     setPixmap(QPixmap(":/res/images/player/swmg.png"));
+    setTransformOriginPoint(boundingRect().width()/2, boundingRect().height()/2);
     nShots_ = numShots;
 }
 
@@ -40,25 +41,27 @@ void Player::move(int dx, int dy){
     int nextX = x() + dx*speed;
     int nextY = y() + dy*speed;
 
+    if(dx > 0){
+        setPixmap(QPixmap(":/res/images/player/swmg.png"));
+    }else if (dx < 0){
+        setPixmap(QPixmap(":/res/images/player/swmg.png").transformed(QTransform().scale(-1, 1)));
+    }
+
     // Checks for walls
     // Top wall
     if(nextY <= game->collisionBox.y1){
-        qDebug() << "Hit top wall";
         return;
     }
     // Right wall
     if(nextX + boundingRect().width() >= game->collisionBox.x2){
-        qDebug() << "Hit right wall";
         return;
     }
     // Bottom wall
     if(nextY + boundingRect().height() > game->collisionBox.y2){
-        qDebug() << "Hit bottom wall";
         return;
     }
     // Left wall
     if(nextX < game->collisionBox.x1){
-        qDebug() << "Hit left wall";
         return;
     }
 

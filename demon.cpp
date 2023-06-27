@@ -12,8 +12,8 @@
 extern Game *game;
 
 Demon::Demon(Rectangle collisionBox)
-    : dx_(QRandomGenerator::global()->bounded(-10, 15)),
-      dy_(QRandomGenerator::global()->bounded(-10, 15)),
+    : dx_(QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED)),
+      dy_(QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED)),
       scale(1.6)
 {
     width = (int) (64 * scale);
@@ -32,6 +32,12 @@ Demon::Demon(Rectangle collisionBox)
 }
 
 void Demon::move() {
+    // Random change in movement
+    if(QRandomGenerator::global()->bounded(1000) < 1){ // Prob. 1/1000
+        dx_ = QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED);
+        dy_ = QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED);
+    }
+
     // Movement
     int newX = x() + dx_;
     int newY = y() + dy_;
@@ -118,7 +124,17 @@ void Demon::initMovement(){
     return;
 }
 
+int Demon::isFacingRight(){
+    return dx_ > 0;
+}
+
 void Demon::animate(){
     currentIndex = (currentIndex + 1) % frames.size();
-    setPixmap(frames[currentIndex]);
+
+    if(isFacingRight()){
+        setPixmap(frames[currentIndex].transformed(QTransform().scale(-1, 1)));
+    }else{
+        setPixmap(frames[currentIndex]);
+    }
+
 }

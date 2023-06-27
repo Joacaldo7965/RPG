@@ -25,7 +25,7 @@ Game::Game(QWidget *parent){
 
     scene->addItem(player);
 
-
+    // Initialize demons
     for (int i = 0; i < numDemons; ++i) {
         Demon *demon = new Demon(collisionBox);
         scene->addItem(demon);
