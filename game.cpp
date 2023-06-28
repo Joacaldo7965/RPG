@@ -2,6 +2,8 @@
 #include "demon.h"
 #include <QRandomGenerator>
 
+#include<QMediaPlayer>
+
 Game::Game(QWidget *parent){
     scene = new QGraphicsScene();
     scene->setSceneRect(0, 0, WIDTH, HEIGHT);
@@ -47,8 +49,11 @@ Game::Game(QWidget *parent){
     demonCount->setPos(demonCount->x(), demonCount->y() + 96);
     scene->addItem(demonCount);
 
+    // Audio initialize
+
     show();
 }
+
 
 void Game::decreaseShot(int c){
     shots->decrease(c);

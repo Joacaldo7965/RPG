@@ -13,6 +13,9 @@ Player::Player(int numShots) {
     setPixmap(QPixmap(":/res/images/player/swmg.png"));
     setTransformOriginPoint(boundingRect().width()/2, boundingRect().height()/2);
     nShots_ = numShots;
+
+    media = new QMediaPlayer();
+    media->setSource(QUrl("qrc:/res/sounds/shadow.mp3"));
 }
 
 void Player::keyPressEvent(QKeyEvent *event) {
@@ -32,6 +35,11 @@ void Player::keyPressEvent(QKeyEvent *event) {
         shoot(0, 20);
     } else if (event->key() == Qt::Key_Right) {
         shoot(20, 0);
+    } else if (event->key() == Qt::Key_M){
+        qDebug() << "---\n" << media->isPlaying();
+        qDebug() << "Playing music!";
+        media->play();
+        qDebug() << media->isPlaying();
     }
 }
 

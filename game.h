@@ -28,6 +28,8 @@ public:
     void checkGameOver();
     void gameOver();
     void gameWin();
+private:
+
 public:
     QGraphicsScene *scene;
     Player *player;

@@ -12,5 +12,7 @@
         <file>res/images/demon/demon_tile006.png</file>
         <file>res/images/effects/fire.png</file>
         <file>res/images/player/swmg.png</file>
+        <file>res/sounds/shadow.mp3</file>
+        <file>res/sounds/shadow.wav</file>
     </qresource>
 </RCC>

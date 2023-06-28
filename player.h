@@ -2,6 +2,7 @@
 #define PLAYER_H
 #include <QLabel>
 #include <QGraphicsPixmapItem>
+#include <QMediaPlayer>
 
 class Player : public QGraphicsPixmapItem {
 public:
@@ -18,6 +19,7 @@ private:
     int nShots_;
     int isFacingRight=1;
     int speed=20;
+    QMediaPlayer *media;
 };
 
 #endif // PLAYER_H
