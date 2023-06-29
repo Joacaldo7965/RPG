@@ -217,7 +217,9 @@ void Game::gameWin(){
     connect(quitButton, SIGNAL(clicked()), this, SLOT(displayMainMenu()));
     scene->addItem(quitButton);
 
-
+    playerHealth->hide();
+    shots->hide();
+    roundCount->setPos(score->x(), score->y() + 32);
 }
 
 bool Game::isAttackInScreen(){
