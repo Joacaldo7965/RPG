@@ -180,11 +180,11 @@ void Game::gameWin(){
     scene->addItem(playButton);
 
     // create the quit button
-    Button* quitButton = new Button(QString("Quit"));
+    Button* quitButton = new Button(QString("Back"));
     int qxPos = this->width()/2 - quitButton->boundingRect().width()/2;
     int qyPos = 350;
     quitButton->setPos(qxPos,qyPos);
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(displayMainMenu()));
     scene->addItem(quitButton);
 }
 
