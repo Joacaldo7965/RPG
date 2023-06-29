@@ -4,9 +4,9 @@
 #include<player.h>
 #include<count.h>
 #include<QGraphicsView>
-#include<QWidget>
 #include<QGraphicsScene>
 
+const QString gameTile = QString("InformaticQuest;");
 
 const int WIDTH = 640;
 const int HEIGHT = 640;
@@ -18,17 +18,22 @@ struct Rectangle {
     int y2;
 };
 
-class Game: public QGraphicsView
-{
+class Game: public QGraphicsView{
+    Q_OBJECT
 public:
-    Game(QWidget *parent=0);
+    Game();
     void killDemon();
     void damagePlayer(int damage);
     void decreaseShot(int c);
     void checkGameOver();
     void gameOver();
     void gameWin();
-private:
+    void restartGame();
+    void quitGame();
+    void displayMainMenu();
+
+private slots:
+    void start();
 
 public:
     QGraphicsScene *scene;
@@ -39,7 +44,6 @@ public:
     Count *demonCount;
     int isGameOver=0;
     Rectangle collisionBox={20, 80, 620, 620};
-private:
     int numDemons;
 };
 

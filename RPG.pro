@@ -13,6 +13,7 @@ win32 {
 
 SOURCES += \
     attack.cpp \
+    button.cpp \
     count.cpp \
     demon.cpp \
     game.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 
 HEADERS += \
     attack.h \
+    button.h \
     count.h \
     demon.h \
     game.h \
