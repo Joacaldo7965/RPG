@@ -1,6 +1,9 @@
 #include "attack.h"
+#include "game.h"
 #include "qgraphicsscene.h"
 #include <QTimer>
+
+extern Game *game;
 
 Attack::Attack() : dx_(0), dy_(0) {
     setPixmap(QPixmap(":/res/images/effects/fire.png"));
@@ -19,5 +22,6 @@ void Attack::move() {
     if (pos().y()+ 20<0 || pos().y()+ 20>640 || pos().x()+ 20<0 || pos().x()+ 20>640){
         scene()->removeItem(this);
         delete this;
+        game->checkGameOver();
     }
 }

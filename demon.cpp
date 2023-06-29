@@ -33,7 +33,7 @@ Demon::Demon(Rectangle collisionBox)
 
 void Demon::move() {
     // Random change in movement
-    if(QRandomGenerator::global()->bounded(1000) < 1){ // Prob. 1/1000
+    if(QRandomGenerator::global()->bounded(800) < 1){ // Prob. 1/1000
         dx_ = QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED);
         dy_ = QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED);
     }
@@ -92,11 +92,8 @@ void Demon::initPosition(Rectangle collisionBox){
         dx = qAbs(x - 640/2);
         dy = qAbs(y - 640/2);
 
-        //qDebug() << "(" << dx << "," << dy << ")";
-
     } while(dx*dx + dy*dy < radius*radius);
 
-    qDebug() << "(" << x << "," << y << ")";
     setPos(x, y);
     return;
 }

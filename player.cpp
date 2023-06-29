@@ -9,13 +9,14 @@
 
 extern Game *game;
 
-Player::Player(int numShots) {
+Player::Player(int healthPoints, int numShots) {
     setPixmap(QPixmap(":/res/images/player/swmg.png"));
     setTransformOriginPoint(boundingRect().width()/2, boundingRect().height()/2);
     nShots_ = numShots;
-
-    media = new QMediaPlayer();
-    media->setSource(QUrl("qrc:/res/sounds/shadow.mp3"));
+    health = healthPoints;
+    isFacingRight = 1;
+    //media = new QMediaPlayer();
+    //media->setSource(QUrl("qrc:/res/sounds/shadow.mp3"));
 }
 
 void Player::keyPressEvent(QKeyEvent *event) {
@@ -36,23 +37,36 @@ void Player::keyPressEvent(QKeyEvent *event) {
     } else if (event->key() == Qt::Key_Right) {
         shoot(20, 0);
     } else if (event->key() == Qt::Key_M){
-        qDebug() << "---\n" << media->isPlaying();
-        qDebug() << "Playing music!";
-        media->play();
-        qDebug() << media->isPlaying();
+        //qDebug() << "---\n" << media->isPlaying();
+        //qDebug() << "Playing music!";
+        //media->play();
+        //qDebug() << media->isPlaying();
     }
 }
 
+void Player::takeDamage(int dmg){
+    health -= dmg;
+}
+
+bool Player::isAlive(){
+    return health > 0;
+}
+
 void Player::move(int dx, int dy){
+    if(!isAlive())
+        return;
     if(dx == 0 && dy == 0)
         return;
     int nextX = x() + dx*speed;
     int nextY = y() + dy*speed;
 
-    if(dx > 0){
-        setPixmap(QPixmap(":/res/images/player/swmg.png"));
-    }else if (dx < 0){
+    // Handle Sprite change of direction
+    if(isFacingRight && dx < 0){
         setPixmap(QPixmap(":/res/images/player/swmg.png").transformed(QTransform().scale(-1, 1)));
+        isFacingRight = 0;
+    }else if(!isFacingRight && dx > 0){
+        setPixmap(QPixmap(":/res/images/player/swmg.png"));
+        isFacingRight = 1;
     }
 
     // Checks for walls
@@ -77,6 +91,8 @@ void Player::move(int dx, int dy){
 }
 
 void Player::shoot(int dx, int dy) {
+    if(!isAlive())
+        return;
     if (nShots_ > 0) {
         Attack *attack = new Attack();
         attack->setPos(x(), y());
@@ -93,6 +109,10 @@ void Player::decreaseShot() {
 
 int Player::getShots(){
     return nShots_;
+}
+
+int Player::getHealth(){
+    return health;
 }
 
 void Player::setStartPosition(int screenCenterX, int screenCenterY) {

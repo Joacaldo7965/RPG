@@ -1,7 +1,7 @@
 #include "game.h"
-#include "gameoverscreen.h"
 #include "button.h"
 #include "demon.h"
+#include "attack.h"
 #include <QRandomGenerator>
 #include<QMediaPlayer>
 
@@ -20,6 +20,10 @@ Game::Game(){
 }
 
 void Game::displayMainMenu(){
+    // clear the screen
+    scene->clear();
+    setBackgroundBrush(QBrush(QColor(255, 255, 255)));
+
     // Create the title text
     QGraphicsTextItem* titleText = new QGraphicsTextItem(gameTile);
     QFont titleFont("comic sans", 50);
@@ -52,12 +56,13 @@ void Game::start(){
 
     // Game start
     setBackgroundBrush(QBrush(QImage(":/res/images/backgrounds/bg.jpg")));
+    isGameOver = 0;
 
     int numShots = numDemons * 2;
     int screenCenterX = WIDTH/2;
     int screenCenterY = HEIGHT/2;
 
-    player = new Player(numShots);
+    player = new Player(1, numShots);
     player->setFlag(QGraphicsItem::ItemIsFocusable);
     player->setFocus();
     player->setStartPosition(screenCenterX, screenCenterY);
@@ -73,17 +78,17 @@ void Game::start(){
     score = new Count(0, 0, QString("Score"), QFont("comic", 32));
     scene->addItem(score);
 
-    shots = new Count(0, player->getShots(), QString("Shots"), QFont("comic", 32));
+    shots = new Count(0, player->getShots(), QString("Attacks"), QFont("comic", 32));
     shots->setPos(shots->x(), shots->y() + 32);
     scene->addItem(shots);
 
-    playerHealth = new Count(0, 3, QString("Health"), QFont("comic", 32), Qt::red);
+    playerHealth = new Count(0, player->getHealth(), QString("Health"), QFont("comic", 32), Qt::red);
     playerHealth->setPos(playerHealth->x(), playerHealth->y() + 64);
     scene->addItem(playerHealth);
 
     demonCount = new Count(0, numDemons, QString("Demons"), QFont("comic", 32), Qt::darkCyan);
     demonCount->setPos(demonCount->x(), demonCount->y() + 96);
-    scene->addItem(demonCount);
+    //scene->addItem(demonCount);
 }
 
 void Game::decreaseShot(int c){
@@ -102,19 +107,21 @@ void Game::damagePlayer(int damage){
         playerHealth->setCount(0);
     }else{
         playerHealth->decrease(damage);
+        player->takeDamage(damage);
     }
     checkGameOver();
 }
 
 void Game::checkGameOver(){
     if(!isGameOver){
-        if(shots->getCount() == 0 || // FIXME: Change this with the bullets on screen
-            playerHealth->getCount() == 0
-            ){
+        if(playerHealth->getCount() == 0){
             gameOver();
         }
         if(demonCount->getCount() == 0){
             gameWin();
+        }
+        if(shots->getCount() == 0 && !isAttackInScreen()){
+            gameOver();
         }
     }
 }
@@ -123,17 +130,70 @@ void Game::gameOver(){
     qDebug() << "GAME OVER";
     isGameOver = 1;
 
+    // Create the title text
+    QGraphicsTextItem* titleText = new QGraphicsTextItem("GAME OVER");
+    QFont titleFont("comic sans", 50);
+    titleText->setFont(titleFont);
+    int txPos = this->width()/2 - titleText->boundingRect().width()/2;
+    int tyPos = 150;
+    titleText->setPos(txPos,tyPos);
+    scene->addItem(titleText);
+
+    // create the play button
+    Button* playButton = new Button(QString("Restart"));
+    int bxPos = this->width()/2 - playButton->boundingRect().width()/2;
+    int byPos = 275;
+    playButton->setPos(bxPos,byPos);
+    connect(playButton, SIGNAL(clicked()), this, SLOT(start()));
+    scene->addItem(playButton);
+
+    // create the quit button
+    Button* quitButton = new Button(QString("Back"));
+    int qxPos = this->width()/2 - quitButton->boundingRect().width()/2;
+    int qyPos = 350;
+    quitButton->setPos(qxPos,qyPos);
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(displayMainMenu()));
+    scene->addItem(quitButton);
+
 }
 
-void Game::restartGame(){
-    qDebug() << "Restarting game";
-}
-
-void Game::quitGame(){
-    qDebug() << "Quiting game";
-}
 
 void Game::gameWin(){
     qDebug() << "You win!!";
     isGameOver = 1;
+
+    // Create the title text
+    QGraphicsTextItem* titleText = new QGraphicsTextItem("You Win!");
+    QFont titleFont("comic sans", 50);
+    titleText->setFont(titleFont);
+    int txPos = this->width()/2 - titleText->boundingRect().width()/2;
+    int tyPos = 150;
+    titleText->setPos(txPos,tyPos);
+    scene->addItem(titleText);
+
+    // create the play button
+    Button* playButton = new Button(QString("Start again"));
+    int bxPos = this->width()/2 - playButton->boundingRect().width()/2;
+    int byPos = 275;
+    playButton->setPos(bxPos,byPos);
+    connect(playButton, SIGNAL(clicked()), this, SLOT(start()));
+    scene->addItem(playButton);
+
+    // create the quit button
+    Button* quitButton = new Button(QString("Quit"));
+    int qxPos = this->width()/2 - quitButton->boundingRect().width()/2;
+    int qyPos = 350;
+    quitButton->setPos(qxPos,qyPos);
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    scene->addItem(quitButton);
+}
+
+bool Game::isAttackInScreen(){
+    foreach (QGraphicsItem* item, scene->items()) {
+        Attack* attackItem = dynamic_cast<Attack*>(item);
+        if (attackItem) {
+            return true;
+        }
+    }
+    return false;
 }

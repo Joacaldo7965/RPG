@@ -28,12 +28,12 @@ public:
     void checkGameOver();
     void gameOver();
     void gameWin();
-    void restartGame();
-    void quitGame();
-    void displayMainMenu();
 
+    bool isAttackInScreen();
 private slots:
     void start();
+public slots:
+    void displayMainMenu();
 
 public:
     QGraphicsScene *scene;
