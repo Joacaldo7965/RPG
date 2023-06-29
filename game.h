@@ -18,6 +18,13 @@ struct Rectangle {
     int y2;
 };
 
+struct RoundConfig{
+    int round;
+    int nDemons;
+    int minDemonSpeed;
+    int maxDemonSpeed;
+};
+
 class Game: public QGraphicsView{
     Q_OBJECT
 public:
@@ -28,23 +35,25 @@ public:
     void checkGameOver();
     void gameOver();
     void gameWin();
-
     bool isAttackInScreen();
 private slots:
     void start();
+    void initNextRound();
+    void initRound();
 public slots:
     void displayMainMenu();
-
 public:
     QGraphicsScene *scene;
     Player *player;
     Count *score;
     Count *shots;
     Count *playerHealth;
-    Count *demonCount;
+    int demonCount;
+    int winRound;
+    Count *roundCount;
     int isGameOver=0;
+    RoundConfig roundConfig;
     Rectangle collisionBox={20, 80, 620, 620};
-    int numDemons;
 };
 
 #endif // GAME_H

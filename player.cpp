@@ -48,6 +48,15 @@ void Player::takeDamage(int dmg){
     health -= dmg;
 }
 
+void Player::addShots(int s){
+    nShots_+= s;
+}
+
+void Player::setShots(int s)
+{
+    nShots_ = s;
+}
+
 bool Player::isAlive(){
     return health > 0;
 }

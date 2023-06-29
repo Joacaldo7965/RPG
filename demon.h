@@ -6,13 +6,11 @@
 #include <QObject>
 #include <QGraphicsPixmapItem>
 
-const int MAX_SPEED = 15;
-const int MIN_SPEED = -15;
 
 class Demon : public QObject, public QGraphicsPixmapItem  {
     Q_OBJECT
 public:
-    Demon(Rectangle collisionBox);
+    Demon(Rectangle collisionBox, int minSpeed, int maxSpeed);
 private:
     void initPosition(Rectangle collisionBox);
     void initAnimation();
@@ -24,6 +22,8 @@ public slots:
 private:
     int dx_;
     int dy_;
+    int minSpeed;
+    int maxSpeed;
 
     QList<QPixmap> frames;
     int currentIndex=0;

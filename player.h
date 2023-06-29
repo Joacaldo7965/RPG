@@ -13,6 +13,8 @@ public:
     void decreaseShot();
     void takeDamage(int dmg);
     void showImageOverlay(const QString& imagePath);
+    void addShots(int s);
+    void setShots(int s);
     bool isAlive();
     int getShots();
     int getHealth();

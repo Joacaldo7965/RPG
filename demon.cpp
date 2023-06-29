@@ -11,9 +11,11 @@
 
 extern Game *game;
 
-Demon::Demon(Rectangle collisionBox)
-    : dx_(QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED)),
-      dy_(QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED)),
+Demon::Demon(Rectangle collisionBox, int minSpeed, int maxSpeed)
+    : dx_(QRandomGenerator::global()->bounded(minSpeed, maxSpeed)),
+      dy_(QRandomGenerator::global()->bounded(minSpeed, maxSpeed)),
+      minSpeed(minSpeed),
+      maxSpeed(maxSpeed),
       scale(1.6)
 {
     width = (int) (64 * scale);
@@ -34,8 +36,8 @@ Demon::Demon(Rectangle collisionBox)
 void Demon::move() {
     // Random change in movement
     if(QRandomGenerator::global()->bounded(800) < 1){ // Prob. 1/1000
-        dx_ = QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED);
-        dy_ = QRandomGenerator::global()->bounded(MIN_SPEED, MAX_SPEED);
+        dx_ = QRandomGenerator::global()->bounded(minSpeed, maxSpeed);
+        dy_ = QRandomGenerator::global()->bounded(minSpeed, maxSpeed);
     }
 
     // Movement
@@ -73,7 +75,7 @@ void Demon::move() {
 
 
 void Demon::initPosition(Rectangle collisionBox){
-    qDebug() << "Initializing demon position";
+    //qDebug() << "Initializing demon position";
     int radius = 300;
     int x, y;
     int dx, dy;

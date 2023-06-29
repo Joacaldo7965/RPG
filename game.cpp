@@ -16,7 +16,7 @@ Game::Game(){
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     collisionBox = {25, 80, 640, 620};
-    numDemons = 4; // Cambia este valor según la cantidad de demonios que desees
+    winRound = 2;
 }
 
 void Game::displayMainMenu(){
@@ -58,7 +58,11 @@ void Game::start(){
     setBackgroundBrush(QBrush(QImage(":/res/images/backgrounds/bg.jpg")));
     isGameOver = 0;
 
-    int numShots = numDemons * 2;
+    // Setup round 1
+    demonCount = 4; // Cambia este valor según la cantidad de demonios que desees
+    roundConfig = {1, demonCount, -10, 15};
+
+    int numShots = demonCount * 2;
     int screenCenterX = WIDTH/2;
     int screenCenterY = HEIGHT/2;
 
@@ -69,11 +73,7 @@ void Game::start(){
 
     scene->addItem(player);
 
-    // Initialize demons
-    for (int i = 0; i < numDemons; ++i) {
-        Demon *demon = new Demon(collisionBox);
-        scene->addItem(demon);
-    }
+    initRound(); // Spawn demons
 
     score = new Count(0, 0, QString("Score"), QFont("comic", 32));
     scene->addItem(score);
@@ -86,19 +86,51 @@ void Game::start(){
     playerHealth->setPos(playerHealth->x(), playerHealth->y() + 64);
     scene->addItem(playerHealth);
 
-    demonCount = new Count(0, numDemons, QString("Demons"), QFont("comic", 32), Qt::darkCyan);
-    demonCount->setPos(demonCount->x(), demonCount->y() + 96);
-    //scene->addItem(demonCount);
+    roundCount = new Count(0, 1, QString("Round"), QFont("comic sans", 32), Qt::white);
+    roundCount->setPos(roundCount->x(), roundCount->y() + 96);
+    scene->addItem(roundCount);
+}
+
+void Game::initRound(){
+    qDebug() << "Spawning" << roundConfig.nDemons;
+    // Initialize demons
+    for (int i = 0; i < roundConfig.nDemons; i++) {
+        Demon *demon = new Demon(collisionBox, roundConfig.minDemonSpeed, roundConfig.maxDemonSpeed);
+        scene->addItem(demon);
+    }
+}
+
+void Game::initNextRound(){
+    // Difficulty increase
+    roundConfig.round++;
+    roundConfig.nDemons++;
+    roundConfig.minDemonSpeed *= 1.1;
+    roundConfig.maxDemonSpeed *= 1.1;
+
+    if(roundConfig.round == winRound + 1){
+        gameWin();
+        return;
+    }
+
+    // Restore stats
+    roundCount->increase(1);
+    player->setShots(roundConfig.nDemons * 2);
+    shots->setCount(roundConfig.nDemons * 2);
+    demonCount = roundConfig.nDemons;
+
+    qDebug() << "Spawning" << roundConfig.nDemons;
+    // Demon spawns
+    initRound();
 }
 
 void Game::decreaseShot(int c){
     shots->decrease(c);
-    checkGameOver();
+    //checkGameOver();
 }
 
 void Game::killDemon(){
+    demonCount--;
     score->increase(10);
-    demonCount->decrease(1);
     checkGameOver();
 }
 
@@ -114,13 +146,11 @@ void Game::damagePlayer(int damage){
 
 void Game::checkGameOver(){
     if(!isGameOver){
-        if(playerHealth->getCount() == 0){
+        if(player->getHealth() == 0){
             gameOver();
-        }
-        if(demonCount->getCount() == 0){
-            gameWin();
-        }
-        if(shots->getCount() == 0 && !isAttackInScreen()){
+        } else if(demonCount == 0){ // TODO: Next Round
+            initNextRound();
+        }else if(shots->getCount() == 0 && !isAttackInScreen()){
             gameOver();
         }
     }
@@ -186,6 +216,8 @@ void Game::gameWin(){
     quitButton->setPos(qxPos,qyPos);
     connect(quitButton, SIGNAL(clicked()), this, SLOT(displayMainMenu()));
     scene->addItem(quitButton);
+
+
 }
 
 bool Game::isAttackInScreen(){
